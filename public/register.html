@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BaibaiFRP 注册</title>
+    <title>注册</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --background-color: #f5f7fa;
-            --text-color: #333;
-            --white: #fff;
-            --border-radius: 8px;
-            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --on-primary: #ffffff;
+            --on-secondary: #ffffff;
+            --on-background: #1e293b;
+            --on-surface: #1e293b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --radius: 0.5rem;
+            --transition: all 0.2s ease-in-out;
         }
 
         * {
@@ -22,69 +27,106 @@
         }
 
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .register-container {
-            background-color: var(--white);
-            padding: 40px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
             width: 100%;
             max-width: 400px;
+            transition: var(--transition);
         }
 
-        .register-container h2 {
-            color: var(--primary-color);
+        .register-container:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .register-container h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 2rem;
+            color: var(--on-surface);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 16px;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
-        .btn-register {
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        button {
             width: 100%;
-            padding: 12px;
-            background-color: var(--secondary-color);
-            color: var(--white);
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: var(--on-primary);
             border: none;
-            border-radius: var(--border-radius);
-            font-size: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: var(--transition);
         }
 
-        .btn-register:hover {
-            background-color: #2980b9;
+        button:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #fee2e2;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="register-container">
-        <h2>用户注册</h2>
+        <h1>注册</h1>
         <form id="registerForm">
             <div class="form-group">
                 <label for="username">用户名</label>
@@ -98,15 +140,31 @@
                 <label for="password">密码</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn-register">注册</button>
+            <div class="form-group">
+                <label for="confirmPassword">确认密码</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <div id="error" class="error-message" style="display: none;"></div>
+            <button type="submit">注册</button>
         </form>
+        <div class="login-link">
+            <p>已有账号？<a href="login.html">登录</a></p>
+        </div>
     </div>
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorElement = document.getElementById('error');
+
+            if (password !== confirmPassword) {
+                errorElement.textContent = '两次输入的密码不一致';
+                errorElement.style.display = 'block';
+                return;
+            }
 
             try {
                 const response = await fetch('/api/auth/register', {
@@ -114,22 +172,19 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password
-                    }),
+                    body: JSON.stringify({ username, email, password }),
                 });
 
                 const data = await response.json();
                 if (response.ok) {
-                    alert(data.message);
-                    window.location.href = '/login';
+                    window.location.href = '/login.html';
                 } else {
-                    alert(data.message);
+                    errorElement.textContent = data.message || '注册失败，请重试';
+                    errorElement.style.display = 'block';
                 }
             } catch (error) {
-                alert('注册请求出错，请稍后重试');
+                errorElement.textContent = '网络错误，请稍后重试';
+                errorElement.style.display = 'block';
             }
         });
     </script>

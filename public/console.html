@@ -5,28 +5,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>控制台</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
+        :root {
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --on-primary: #ffffff;
+            --on-secondary: #ffffff;
+            --on-background: #1e293b;
+            --on-surface: #1e293b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --radius: 0.5rem;
+            --transition: all 0.2s ease-in-out;
+            --icon-size: 1.25rem;
         }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--on-background);
+            line-height: 1.5;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            margin-top: 2rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-nav li i {
+            font-size: var(--icon-size);
+        }
+
+        .sidebar-nav li:hover {
+            background-color: var(--secondary);
+            transform: translateX(4px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .dashboard-card {
+            background-color: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .dashboard-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-card h3 {
+            margin-top: 0;
+            color: var(--on-surface);
+        }
+
+        .dashboard-card p {
+            color: var(--on-surface);
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>欢迎来到控制台</h1>
-        <p>您已成功登录系统。</p>
+    <div class="sidebar">
+        <h2>控制台</h2>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><i class="fas fa-tachometer-alt"></i><a href="/console.html">控制台</a></li>
+                <li><i class="fas fa-network-wired"></i><a href="#">隧道管理</a></li>
+                <li><i class="fas fa-plus"></i><a href="#">隧道添加</a></li>
+                <li><i class="fas fa-chart-line"></i><a href="#">隧道监控</a></li>
+                <li><i class="fas fa-hand-holding-usd"></i><a href="#">捐赠入口</a></li>
+                <li><i class="fas fa-cog"></i><a href="#">个人设置</a></li>
+            </ul>
+        </nav>
     </div>
+    <div class="main-content">
+        <div class="dashboard-card">
+            <h1>欢迎来到控制台</h1>
+            <div class="user-info">
+                <div class="user-info-card">
+                    <div class="avatar">头像</div>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">名称：</span>
+                    <span id="username">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">邮箱：</span>
+                    <span id="email">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">注册时间：</span>
+                    <span id="register-time">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">是否已实名：</span>
+                    <span id="verified">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">当前积分：</span>
+                    <span id="points">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">限制上下行带宽：</span>
+                    <span id="bandwidth">加载中...</span>
+                </div>
+                <div class="user-info-card">
+                    <span class="info-label">拥有流量：</span>
+                    <span id="traffic">加载中...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 模拟获取用户信息
+        async function fetchUserInfo() {
+            try {
+                const response = await fetch('/api/auth/user-info');
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('username').textContent = data.username;
+                    document.getElementById('email').textContent = data.email;
+                    document.getElementById('register-time').textContent = data.registerTime;
+                    document.getElementById('verified').textContent = data.verified ? '是' : '否';
+                    document.getElementById('points').textContent = data.points;
+                    document.getElementById('bandwidth').textContent = data.bandwidth;
+                    document.getElementById('traffic').textContent = data.traffic;
+                }
+            } catch (error) {
+                console.error('获取用户信息失败:', error);
+            }
+        }
+
+        fetchUserInfo();
+    </script>
 </body>
 </html>
